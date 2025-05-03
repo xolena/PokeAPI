@@ -1,0 +1,288 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -380
+      ],
+      "id": "1e06dc00-e055-41a9-940b-f843750836c6",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1CoH-nMsktTTGpJpr10AP-uPAJpQAbE5-tqy3HgNDYgE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 136144717,
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CoH-nMsktTTGpJpr10AP-uPAJpQAbE5-tqy3HgNDYgE/edit#gid=136144717"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -600,
+        -200
+      ],
+      "id": "3aab741b-33b8-4a2c-8fd6-614b29161dfd",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1BL2qNKZ30p0CSEa",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Dados básicos\nconst baseData = {\n  game_index: $node[\"Google Sheets\"].json[\"Game Index\"],\n  nome: $node[\"HTTP Request1\"].json?.name?.charAt(0).toUpperCase() + $node[\"HTTP Request1\"].json?.name?.slice(1) || \"N/A\",\n  tipos: $node[\"HTTP Request1\"].json?.types?.map(t => t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)).join(\", \") || \"N/A\",\n  evolucao: \"Sem evolução\"\n};\n\n// Processamento de evolução\nif ($node[\"HTTP Request3\"].json?.chain) {\n  const currentName = $node[\"HTTP Request1\"].json?.name;\n  const evolutionChain = $node[\"HTTP Request3\"].json.chain;\n  \n  // Lista de Eeveelutions para tratamento especial\n  const eeveelutions = ['vaporeon', 'jolteon', 'flareon', 'espeon', 'umbreon', 'leafeon', 'glaceon', 'sylveon'];\n  \n  // Função para encontrar todas as evoluções na cadeia\n  function findAllEvolutions(chain) {\n    let evolutions = [];\n    \n    chain.evolves_to.forEach(evo => {\n      // Ignora outras Eeveelutions se o Pokémon atual for uma Eeveelution\n      if (!eeveelutions.includes(currentName) || !eeveelutions.includes(evo.species.name)) {\n        evolutions.push(evo.species.name);\n      }\n      evolutions = evolutions.concat(findAllEvolutions(evo));\n    });\n    \n    return evolutions;\n  }\n  \n  // Função para encontrar o Pokémon atual na cadeia de evolução\n  function findCurrentPokemon(chain, targetName) {\n    if (chain.species.name === targetName) {\n      return chain;\n    }\n    \n    for (const evo of chain.evolves_to) {\n      const result = findCurrentPokemon(evo, targetName);\n      if (result) return result;\n    }\n    \n    return null;\n  }\n  \n  const currentInChain = findCurrentPokemon(evolutionChain, currentName);\n  \n  if (currentInChain) {\n    // Tratamento especial para Eeveelutions\n    if (eeveelutions.includes(currentName)) {\n      baseData.evolucao = \"Evolução de: Eevee\";\n      \n      // Verifica se há evoluções além de Eevee (caso especial)\n      const postEvolutions = findAllEvolutions(currentInChain).filter(name => !eeveelutions.includes(name));\n      if (postEvolutions.length > 0) {\n        baseData.evolucao += ` | Evolui para: ${postEvolutions.map(name => name.charAt(0).toUpperCase() + name.slice(1)).join(\", \")}`;\n      }\n    } else {\n      // Processamento normal para outros Pokémon\n      let preEvolutions = [];\n      if (evolutionChain.species.name !== currentName) {\n        let current = evolutionChain;\n        while (current && current.species.name !== currentName) {\n          if (current.species.name !== currentName) {\n            preEvolutions = [current.species.name];\n          }\n          current = current.evolves_to[0];\n        }\n      }\n      \n      const postEvolutions = findAllEvolutions(currentInChain);\n      \n      let evolucaoParts = [];\n      if (preEvolutions.length > 0) {\n        evolucaoParts.push(`Evolução de: ${preEvolutions.map(name => name.charAt(0).toUpperCase() + name.slice(1)).join(\", \")}`);\n      }\n      if (postEvolutions.length > 0) {\n        evolucaoParts.push(`Evolui para: ${postEvolutions.map(name => name.charAt(0).toUpperCase() + name.slice(1)).join(\", \")}`);\n      }\n      \n      if (evolucaoParts.length > 0) {\n        baseData.evolucao = evolucaoParts.join(\" | \");\n      }\n    }\n  }\n}\n\nreturn baseData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -200
+      ],
+      "id": "6aa71e43-517e-40ae-86e5-8dd5d9617489",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1CoH-nMsktTTGpJpr10AP-uPAJpQAbE5-tqy3HgNDYgE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 136144717,
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CoH-nMsktTTGpJpr10AP-uPAJpQAbE5-tqy3HgNDYgE/edit#gid=136144717"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Game Index": "={{$node[\"Code\"].json[\"game_index\"]}}",
+            "Tipo ": "={{$node[\"Code\"].json[\"tipos\"]}}",
+            "Nome": "={{$node[\"Code\"].json[\"nome\"]}}",
+            "Evolução": "={{$node[\"Code\"].json[\"evolucao\"]}}"
+          },
+          "matchingColumns": [
+            "Game Index"
+          ],
+          "schema": [
+            {
+              "id": "Game Index",
+              "displayName": "Game Index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tipo ",
+              "displayName": "Tipo ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Evolução",
+              "displayName": "Evolução",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        360,
+        -380
+      ],
+      "id": "100d4d2e-9222-4b5f-ae2f-ead90b223935",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1BL2qNKZ30p0CSEa",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://pokeapi.co/api/v2/pokemon/{{$node[\"Google Sheets\"].json[\"Game Index\"]}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -420,
+        -380
+      ],
+      "id": "0183bf7c-3de1-4a74-b8c5-50e00625f2ec",
+      "name": "HTTP Request1",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "=https://pokeapi.co/api/v2/pokemon-species/{{$node[\"HTTP Request1\"].json[\"id\"]}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -220,
+        -200
+      ],
+      "id": "b7ad78a2-5c4a-4cef-b64f-a6bfaa39eb7a",
+      "name": "HTTP Request2",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"HTTP Request2\"].json[\"evolution_chain\"][\"url\"]}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -40,
+        -380
+      ],
+      "id": "957e04d2-c28f-4b46-92ed-cafb8eaa5f89",
+      "name": "HTTP Request3",
+      "retryOnFail": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "54d2b497-623b-4d76-8863-568c8b96ea44",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ee071b6b6a21e15987a7c7412654f4598c37af1bf63db71fdfb41daad501c847"
+  },
+  "id": "Dsaj1wDYPaMYYGeU",
+  "tags": []
+}
