@@ -17,10 +17,11 @@ Planilha com:
 - Tipos concatenados.
 - Cadeia evolutiva.
 
-![image](https://github.com/user-attachments/assets/e5254806-97c1-4420-8a0f-7737419a4117)
+![image](https://github.com/user-attachments/assets/84a508d5-d72e-433f-a5fe-e6fcc6b6b2bb)
+
 
 ##Passo a passo e dificuldades encontradas##
-- Não possuia conhecimento da plataforma n8n, então fiz pesquisas para entender mais sobre.
+- Não possuia conhecimento da plataforma n8n, fiz pesquisas para entender mais sobre e conversei com amigos e colegas, então podem ter erros.
 
 ##Primeiro passo:
 - Configurar o n8n e o NodeJs.
@@ -62,8 +63,35 @@ Planilha com:
 ##Sétimo Passo:
 - Com os 3 HTTP's, podemos inserir o nó de função, ou seja o código.
 - O código vai filtrar todos os dados necessários, nome, tipo e linha evolutiva.
-- Segue o código:
+- O código está no My_workflow.json
+
+##Eeveelutions!!!##
+-As Eeveelutions representam um caso especial no universo Pokémon, onde uma única espécie (Eevee) pode evoluir para oito formas diferentes. Esta peculiaridade exigiu um tratamento específico no código:
+
+1- Quando o sistema identifica um Eevee (ou detecta múltiplas evoluções), ele ativa um modo especial de processamento. Primeiro, coleta todos os nomes das possíveis evoluções, filtrando variações especiais como as formas Gigantamax. Em seguida, formata essas informações em uma string clara e organizada, listando todas as opções de evolução separadas por vírgulas.
+2- Mantém a consistência com o tratamento de outros Pokémon.
+3- Fornece informação completa ao usuário final.
+4- Permite fácil expansão caso novas Eeveelutions sejam adicionadas.
+
+##Oitavo Passo:
+- Depois do código, inserimos um nó para atualizar (update) os dados da planilha, assim preenchendo corretamente as informações criadas.
+- Para isso devemos inserir a id da planilha e a página novamente.
+- E também é necessário implementar quais colunas devem ser atualizadas.
+
+![image](https://github.com/user-attachments/assets/90bd9b43-7918-44dc-9a68-0de9ae0eb669)
+
+##Resultado final:
+- O output do Google Sheets Update deve aparecer a index do Pokémon, seu nome, tipo e sua pré-evolução ou sua próxima evolução.
+
+![image](https://github.com/user-attachments/assets/6ab270a1-5a86-4de5-80e4-e7767a78bbea)
+
+- A estrutura dos nós se encontrará desse jeito:
+
+![image](https://github.com/user-attachments/assets/68bc88b5-d05c-4931-917b-f4316957af1a)
 
 
+- Caso tudo esteja correto, podemos verificar a planilha do Google Sheets e estará já atualizada com os dados corretos:
+
+![image](https://github.com/user-attachments/assets/e5254806-97c1-4420-8a0f-7737419a4117)
 
 
