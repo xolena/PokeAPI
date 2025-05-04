@@ -1,6 +1,3 @@
-Aqui está uma versão profissional e completa da sua documentação, organizada em formato técnico padronizado:
-
----
 
 # Documentação Técnica: Automação Pokémon com n8n e PokéAPI
 
@@ -35,13 +32,24 @@ Aqui está uma versão profissional e completa da sua documentação, organizada
 
 
 2. **Extração de Dados**
-  - Localizado no repositório 
+  - Localizado no repositório My_workflow.json
 
 3. **Integração com PokéAPI**
    - 3 Chamadas HTTP Request consecutivas:
      1. Dados básicos do Pokémon (`/pokemon/{id}`)
+
+![image](https://github.com/user-attachments/assets/2d907a73-3876-4753-95ac-3ebbdf29baf6)
+
      2. Informações de espécie (`/pokemon-species/{id}`)
+
+![image](https://github.com/user-attachments/assets/943366d5-7d2b-4916-9e88-08e4567902ea)
+
      3. Cadeia evolutiva (`/evolution-chain/{id}`)
+
+![image](https://github.com/user-attachments/assets/bac63341-768b-457c-8f86-8bc6b48bbe75)
+
+
+
 
 4. **Processamento Customizado**
    - Lógica para tratamento especial de Eeveelutions:
@@ -76,6 +84,9 @@ Aqui está uma versão profissional e completa da sua documentação, organizada
 - **Precisão**: Dados validados diretamente da fonte oficial
 - **Escalabilidade**: Fluxo adaptável para futuras gerações Pokémon
 
+![image](https://github.com/user-attachments/assets/378d5d77-9c75-4229-8056-eb6a43cf274d)
+
+
 ## 6. Melhorias Futuras
 1. Implementação de cache local
 2. Suporte a mega-evoluções
@@ -95,12 +106,5 @@ export GSHEETS_CREDENTIALS='<credenciais>'
 - [Documentação PokéAPI](https://pokeapi.co/docs/v2)
 - [n8n Node Reference](https://docs.n8n.io/nodes/)
 - [Google Sheets API Guide](https://developers.google.com/sheets/api)
-
----
-
-**Notas Adicionais**:
-- Inclua screenshots dos nós configurados em anexo
-- Adicione o JSON completo do workflow como apêndice
-- Mantenha um changelog para futuras atualizações
 
 Esta estrutura apresenta seu trabalho de forma técnica e profissional, destacando tanto a implementação quanto suas decisões de arquitetura. Quer ajustar alguma seção específica?
