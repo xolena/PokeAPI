@@ -66,11 +66,15 @@ Planilha com:
 - O código está no My_workflow.json
 
 ##Eeveelutions!!!##
+
 -As Eeveelutions representam um caso especial no universo Pokémon, onde uma única espécie (Eevee) pode evoluir para oito formas diferentes. Esta peculiaridade exigiu um tratamento específico no código:
 
 1- Quando o sistema identifica um Eevee (ou detecta múltiplas evoluções), ele ativa um modo especial de processamento. Primeiro, coleta todos os nomes das possíveis evoluções, filtrando variações especiais como as formas Gigantamax. Em seguida, formata essas informações em uma string clara e organizada, listando todas as opções de evolução separadas por vírgulas.
+
 2- Mantém a consistência com o tratamento de outros Pokémon.
+
 3- Fornece informação completa ao usuário final.
+
 4- Permite fácil expansão caso novas Eeveelutions sejam adicionadas.
 
 ##Oitavo Passo:
